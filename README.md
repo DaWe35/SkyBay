@@ -1,9 +1,9 @@
-# Skybin
+# SkyBay
 
-Decentralized text uploading website. This will upload the website to whatever portal is rendering the skapp.
+Decentralized product page generator. This will upload the website to whatever portal is rendering the skapp.
 
 ### Dapp URL
-https://siasky.net/CAAVU14pB9GRIqCrejD7rlS27HltGGiiCLICzmrBV0wVtA
+https://siasky.net/EABkMjXzxJRpPz0eO0Or5fy2eo-rz3prdigGwRlyNd9mwA
 
-### Skylink
-https://siasky.net/file/CAAVU14pB9GRIqCrejD7rlS27HltGGiiCLICzmrBV0wVtA
+### Example page generated
+https://siasky.net/CAAc-TTpY-MV8YZlPO0L6mwXwgde17NBlmTVq4c9ifUJ2Q

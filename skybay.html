@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>SkyBay | Decentralized Shopping powered by Sia Skynet</title>
+
+  <script>
+    function generateUUID() {
+      let uuid = ''
+      const cs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for (let i = 0; i < 16; i++) {
+        uuid += cs.charAt(Math.floor(Math.random() * cs.length));
+      }
+      return uuid;
+    }
+
+    function save() {
+      var title = document.getElementById("title").value
+      var price = document.getElementById("price").value
+      var url = document.getElementById("url").value
+      var description = document.getElementById("description").value
+      var image = document.getElementById("image").value
+      var button = document.getElementById("save-trigger")
+      var buttonText = document.getElementById("buttonText")
+
+      button.classList.add("loading")
+      buttonText.innerHTML = 'Uploading image, be patient...'
+      
+      var uuid = generateUUID()
+      const selectedFile = document.getElementById('image').files[0];
+
+      var imageData = new FormData()
+      imageData.append("file", selectedFile)
+
+      // Upload image first
+      fetch(`/skynet/skyfile/${uuid}?filename=skybin.html`, {
+        method: "POST",
+        body: imageData
+      })
+        .then(response => response.json())
+        .then(result => {
+          imagelink = result.skylink
+          console.log('image: ' + imagelink)
+
+          var blob = new Blob(
+        [
+          `<!DOCTYPE html>
+<!--
+
+  This is just the template of the product page, you need to insert it into skybay.html
+  let page = 'html code'
+
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>` + title + `</title>
+    <style>
+      /* Basic Styling */
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px;
+        display: flex;
+      }
+
+      /* Columns */
+      .left-column {
+        width: 65%;
+        position: relative;
+      }
+
+      .right-column {
+        width: 35%;
+        margin-top: 60px;
+      }
+
+
+      /* Left Column */
+      .left-column img {
+        max-width: 100%;
+        max-height: 100vh;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .left-column img.active {
+        opacity: 1;
+      }
+
+
+      /* Right Column */
+
+      /* Product Description */
+      .product-description {
+        margin-bottom: 20px;
+      }
+      .product-description span {
+        font-size: 12px;
+        color: #358ED7;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+      .product-description h1 {
+        font-weight: 300;
+        font-size: 52px;
+        color: #43484D;
+        letter-spacing: -2px;
+      }
+      .product-description p {
+        font-size: 16px;
+        font-weight: 300;
+        color: #86939E;
+        line-height: 24px;
+      }
+
+      /* Product Configuration */
+
+      /* Product Color */
+
+      /* Cable Configuration */
+
+      .cable-config {
+        border-bottom: 1px solid #E1E8EE;
+        margin-bottom: 20px;
+      }
+
+      .cable-config a {
+        color: #358ED7;
+        text-decoration: none;
+        font-size: 12px;
+        position: relative;
+        margin: 10px 0;
+        display: inline-block;
+      }
+      .cable-config a:before {
+        content: "?";
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        border: 2px solid rgba(53, 142, 215, 0.5);
+        display: inline-block;
+        text-align: center;
+        line-height: 16px;
+        opacity: 0.5;
+        margin-right: 5px;
+      }
+
+      /* Product Price */
+      .product-price {
+        display: flex;
+        align-items: center;
+      }
+
+      .product-price span {
+        font-size: 26px;
+        font-weight: 300;
+        color: #43474D;
+        margin-right: 20px;
+      }
+
+      .cart-btn {
+        display: inline-block;
+        background-color: #7DC855;
+        border-radius: 6px;
+        font-size: 16px;
+        color: #FFFFFF;
+        text-decoration: none;
+        padding: 12px 30px;
+        transition: all .5s;
+      }
+      .cart-btn:hover {
+        background-color: #64af3d;
+      }
+
+      /* Responsive */
+      @media (max-width: 940px) {
+        .container {
+          flex-direction: column;
+          margin-top: 60px;
+        }
+
+        .left-column,
+        .right-column {
+          width: 100%;
+        }
+
+        .left-column img {
+          width: 300px;
+          right: 0;
+          top: -65px;
+          left: initial;
+        }
+      }
+
+      @media (max-width: 535px) {
+        .left-column img {
+          width: 220px;
+          top: -85px;
+        }
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <main class="container">
+
+      <!-- Left Column / Headphones Image -->
+      <div class="left-column">
+        <img data-image="red" class="active" src="` + imagelink + `" alt="">
+      </div>
+
+
+      <!-- Right Column -->
+      <div class="right-column">
+
+        <!-- Product Description -->
+        <div class="product-description">
+          <span>SkyBay shopping</span>
+          <h1>` + title + `</h1>
+          <p>` + description + `</p>
+        </div>
+
+        <!-- Product Configuration -->
+        <div class="product-configuration">
+          <div class="cable-config">
+            <a href="https://github.com/DaWe35/SkyBay">This site is created with SkyBay, and hosted on Sia Skynet decentralized storage. Be careful.</a>
+          </div>
+        </div>
+
+        <!-- Product Pricing -->
+        <div class="product-price">
+          <span>` + price + `</span>
+          <a href="` + url + `" class="cart-btn">Add to cart</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+`
+        ],
+        { type: "text/html" }
+      )
+
+          var formData = new FormData()
+          formData.append("file", blob)
+          uuid = generateUUID()
+          
+          buttonText.innerHTML = 'Uploading the code...'
+          // upload the html blob
+          fetch(`/skynet/skyfile/${uuid}?filename=skybin.html`, {
+            method: "POST",
+            body: formData
+          })
+            .then(response2 => response2.json())
+            .then(result2 => {
+              button.classList.remove("loading")
+              buttonText.innerHTML = 'Generate Skynet link'
+              var newLink = document.createElement("a")
+              newLink.href = result2.skylink
+              console.log('file:', result2)
+              newLink.classList.add("skylink")
+              newLink.setAttribute("target", "_blank")
+              newLink.textContent =
+                "https://" + window.location.hostname + "/" + result2.skylink
+              document.getElementById("skylinks").appendChild(newLink)
+              var linkBreak = document.createElement("br")
+              document.getElementById("skylinks").appendChild(linkBreak)
+            })
+            .catch(error => {
+              button.classList.remove("loading")
+              buttonText.innerHTML = 'Generate Skynet link'
+              console.error("Error:", error)
+            })
+        })
+        .catch(error => {
+          button.classList.remove("loading")
+              buttonText.innerHTML = 'Generate Skynet link'
+          console.error("Error:", error)
+        })
+    }
+  </script>
+
+  <style type="text/css">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
+      color: #4a5568;
+      background-color: #fff;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 500;
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .caps, .caps a {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #57b560;
+    }
+
+    .snippet-wrapper {
+      margin-top: 30px;
+      background: #ffffff;
+      box-shadow: 20px 20px 60px #cfcfcf, -20px -20px 60px #ffffff;
+      border-radius: 20px;
+    }
+
+    #description {
+      padding: 40px;
+      border: none;
+      background: transparent;
+    }
+
+    .cta {
+      margin-top: 40px;
+    }
+
+    .btn {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 20px 40px;
+      background: #57b560;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      background: #59ad61;
+    }
+
+    .btn:active {
+      background: #57b560;
+    }
+
+    .btn>svg {
+      padding-right: 8px;
+    }
+
+    .loading {
+      background: gray !important;
+      cursor: not-allowed;
+    }
+
+    #skylinks {
+      padding-top: 40px;
+    }
+
+    #skylinks>a {
+      padding-top: 20px;
+      display: block;
+      color: #4a5568;
+      font-size: 18px;
+    }
+    input, label {
+      font-size: 120%;
+      margin: 10px;
+      border: none;
+      min-width: 400px;
+    }
+    .fs-100 {
+      font-size: 100%;
+      min-width: auto;
+    }
+    #title {
+      font-size: 160%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <h1>SkyBay</h1>
+    <!-- <span class="caps" style="font-size: 16px;">Decentralized.</span> -->
+
+    <div class="snippet-wrapper">
+      <input placeholder="Title" id="title">
+    </div>
+    <div class="snippet-wrapper">
+      <input placeholder="Price" id="price">
+    </div>
+    <div class="snippet-wrapper">
+      <input placeholder="Add to cart button url" id="url">
+    </div>
+    <div class="snippet-wrapper">
+      <label>Image: <input placeholder="Image" type="file" id="image" class="fs-100"></label>
+    </div>
+    <div class="snippet-wrapper">
+      <textarea id="description" rows="10" cols="80" placeholder="Description"></textarea>
+    </div>
+    <br />
+    <div class="cta">
+      <button id="save-trigger" class="btn" type="button" onclick="save()">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <title>web-hyperlink</title>
+          <g fill="#ffffff">
+            <path
+              d="M13,5.142v2.136C13.595,7.625,14,8.263,14,9v2c0,1.103-0.897,2-2,2H8c-1.103,0-2-0.897-2-2V9 c0-1.103,0.897-2,2-2h1V5H8C5.794,5,4,6.794,4,9v2c0,2.206,1.794,4,4,4h4c2.206,0,4-1.794,4-4V9C16,7.141,14.721,5.589,13,5.142z">
+            </path>
+            <path fill="#ffffff"
+              d="M8,1H4C1.794,1,0,2.794,0,5v2c0,1.859,1.279,3.411,3,3.858V8.722C2.405,8.375,2,7.737,2,7V5 c0-1.103,0.897-2,2-2h4c1.103,0,2,0.897,2,2v2c0,1.103-0.897,2-2,2H7v2h1c2.206,0,4-1.794,4-4V5C12,2.794,10.206,1,8,1z">
+            </path>
+          </g>
+        </svg>
+      <span id="buttonText">Generate Skynet link</span>
+      </button>
+    </div>
+    <div id="skylinks"></div>
+
+    <span style="margin-top: auto;" class="caps">Powered by Sia Skynet - <a href="https://github.com/DaWe35/SkyBay">GitHub</a></span>
+  </div>
+</body>
+
+</html>
